@@ -17,6 +17,9 @@
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
    crossorigin=""></script>
 
+   <script src="pouchdb-7.1.1.min.js"></script>
+	<script src="js/base.js"></script>
+	<script src="js/app.js"></script>
 
 
 
@@ -129,22 +132,7 @@
 
 
  	<script>
- 		/*
- 		var start_lat
- 		var start_lon
 
- 		
-
- 		window.onload = getLocation(function(res) {
-
- 			start_lat = res[0]
- 			start_lon = res[1]
-
- 			console.log(res[0], res[1])
-
-
- 		}
-		*/
 
  		const promise1 = new Promise(function(resolve, reject) {
 
@@ -171,25 +159,62 @@
 		promise1.then(function(latlon) {
 
 				console.log(latlon[0],latlon[1])
-				document.getElementById("loading_bar").innerHTML = "You can Join Now Soldier. Take care!";
+				document.getElementById("loading_bar").innerHTML = "You can now join. Take care!";
 
 			});
 
 		
 
-		//document.getElementById("loading_bar").innerHTML = "You can Join Now Soldier. Take care!";
 
 
+		var db = new PouchDB('test_db');
 
 
+		function add_player_to_db(name) {
+			  var player = {
+			    _id: new Date().toISOString(),
+			    player_name: name.toString(),
+			    marked: false,
+			    lat: start_lat,
+			    lon: start_lon
+			  };
+			  console.log(name)
+			  db.put(player, function callback(err, result) {
+			    if (!err) {
+			      console.log('Successfully posted a todo!');
+			    }
+			  });
+			}
 
 
-		var player_list = []
+		function showPlayers() {
+			  db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+			  	console.log(doc)
+
+			  	var i;
+				for (i = 0; i < doc.rows.length; i++) {
+				  console.log(i, doc.rows[i])
+				} 
+
+			  });
+			}
+		
 		function create_player() {
 
 			var name = get_name()
+			add_player_to_db(name)
 			return name
 			};
+
+
+		function deleteButtonPressed() {
+			  db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+			    doc.forEach(db.remove(row));
+			  });
+			}
+	
+
+		
 
 
 		function get_name(){
@@ -201,13 +226,33 @@
 			  console.log("User cancelled the prompt.");
 			} else {
 			  var name = person;
+
 			} 
 
 			open_map(start_lat, start_lon, name)
 			console.log("map should be there", start_lat, start_lon, name)
+			return name
+
+
 
 		};
-	
+		
+
+
+		function plot_players (map) {
+
+			db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+			  	console.log(doc)
+
+			  	var i;
+				for (i = 0; i < doc.rows.length; i++) {
+					console.log("adding player: ", doc.rows[i].doc["player_name"], " at ", [doc.rows[i].doc["lat"], doc.rows[i].doc["lon"]])
+
+				 L.marker([doc.rows[i].doc["lat"], doc.rows[i].doc["lon"]]).addTo(map);
+				} 
+
+			  });
+		}
 
 	
 		
@@ -232,20 +277,20 @@
 
 			var map = L.map('map').setView([lat, lon], 18);
 
-			/*
-			googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
-			    subdomains:['mt0','mt1','mt2','mt3']
+
+			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(map);
-			*/
 
-
-		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-		}).addTo(map);
-
-			L.marker([lat, lon], title=name).addTo(map);
+			//L.marker([lat, lon], title=name).addTo(map);
+			plot_players (map)
 			console.log("map opened at ", lat, lon)
+
+			//showPlayers()
 			}
+
+
+
 
 
 	
