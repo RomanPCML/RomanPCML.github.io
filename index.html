@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<title>Hide and Seek - Start</title>
+
+	<meta charset="utf-8" />
+
+
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+ 	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+
+
+
+   <style>
+
+   	body{
+
+   	margin: auto;
+   	padding: auto;
+    height: 100%;
+	width: 100%;
+	background-image: url('https://external-preview.redd.it/2nCFbt4QaRi2zhtRiowgJhYzQP1I7vOQS9oZd1T9CzI.jpg?auto=webp&s=4856f4ee620ea17597c280eb83348b16b66265bb');
+	background-repeat: no-repeat;
+	}
+
+	#join_button{
+
+		height: 30%;
+		width: 80%;
+		margin: auto;
+		border-radius: 12px;
+ 		display: flex; 
+ 		justify-content: center; 
+		font-size: 5em;
+	}
+
+	#loading_bar{
+
+		align-self: center;
+		margin-top: 3em;
+		color: red;
+		background-color: white;
+		font-family: "Lucida Console", Courier, monospace;
+		text-align: center;
+		font-size: 2em;
+
+
+
+	}
+
+	#h2 {
+
+		align-self: center;
+		background-color: white;
+		font-family: "Lucida Console", Courier, monospace;
+		text-align: center;
+
+	}
+
+	#map {
+
+		height: 1334px;
+		width: 750px;
+		display: none;
+		align-self: center;
+
+
+
+	}
+
+
+
+	</style>
+
+
+	
+
+
+
+</head>
+
+
+<body>
+
+	
+	
+
+	<h2 id="h2"> Welcome to Hide and Seek Waldtrudering </h2>
+
+ 	<button id="join_button" onclick="create_player()">  Join </button>
+
+ 	<div id="loading_bar"> Please wait for GPS Signal </div>
+
+ 	<div id="map"></div>
+
+
+ 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 	<script>
+
+ 		var start_lat
+ 		var start_lon
+
+ 		/*
+
+ 		window.onload = getLocation(function(res) {
+
+ 			start_lat = res[0]
+ 			start_lon = res[1]
+
+ 			console.log(res[0], res[1])
+
+
+
+		*/
+
+ 		const promise1 = new Promise(function(resolve, reject) {
+
+ 			if (navigator.geolocation) {
+		        navigator.geolocation.getCurrentPosition(
+		            function(position){
+		                start_lat = position.coords.latitude
+			 			start_lon = position.coords.longitude
+
+			 			console.log(position.coords.latitude, position.coords.longitude)
+			 			resolve([start_lat, start_lon])
+		            }
+		        );
+		    } else {
+		        console.log("no position");
+		        reject()
+		    }
+
+ 			
+
+ 		});
+
+
+		promise1.then(function(latlon) {
+
+				console.log(latlon[0],latlon[1])
+				document.getElementById("loading_bar").innerHTML = "You can Join Now Soldier. Take care!";
+
+			});
+
+
+
+
+
+
+		var player_list = []
+		function create_player() {
+
+			var name = get_name()
+			return name
+			};
+
+
+		function get_name(){
+
+
+			var person = prompt("Please enter your name:", "Harry Potter");
+
+			if (person == null || person == "") {
+			  console.log("User cancelled the prompt.");
+			} else {
+			  var name = person;
+			} 
+
+			open_map(start_lat, start_lon, name)
+			console.log("map should be there", start_lat, start_lon, name)
+
+		};
+	
+
+	
+		
+
+		function open_map(lat, lon, name){
+
+
+			 document.getElementById("join_button").style.display = "none";
+			 document.getElementById("loading_bar").style.display = "none";
+			 document.getElementById("h2").style.display = "none";
+
+			 document.getElementById("map").style.display = "block";
+
+
+			 console.log(document.getElementById("join_button").style.display)
+			 console.log(document.getElementById("loading_bar").style.display)
+			 console.log(document.getElementById("h2").style.display)
+
+
+
+
+
+			var map = L.map('map').setView([lat, lon], 13);
+
+			googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+			    subdomains:['mt0','mt1','mt2','mt3']
+			}).addTo(map);
+
+
+			L.marker([lat, lon], title=name).addTo(map);
+			console.log("map opened at ", lat, lon)
+			}
+
+
+	
+
+		function add_to_map(player) {
+
+		}
+
+
+
+		function onLocationFound(e) {
+			    var radius = e.accuracy;
+
+			    L.marker(e.latlng).addTo(map)
+			        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+			    L.circle(e.latlng, radius).addTo(map);
+			}
+
+		
+
+		function onLocationError(e) {
+		    alert(e.message);
+		}
+
+		
+				
+	</script>
+
+
+
+
+
+</body>
