@@ -175,6 +175,7 @@
 			    var rawFile = new XMLHttpRequest();
 			    rawFile.open("GET", file, false);
 			    rawFile.onreadystatechange = function ()
+			    console.log("opened file")
 			    {
 			        if(rawFile.readyState === 4)
 			        {
