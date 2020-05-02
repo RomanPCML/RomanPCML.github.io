@@ -167,7 +167,26 @@
 
 
 
-		var db = new PouchDB('test_db');
+		//var db = new PouchDB('test_db');
+
+
+		function readTextFile(file)
+			{
+			    var rawFile = new XMLHttpRequest();
+			    rawFile.open("GET", file, false);
+			    rawFile.onreadystatechange = function ()
+			    {
+			        if(rawFile.readyState === 4)
+			        {
+			            if(rawFile.status === 200 || rawFile.status == 0)
+			            {
+			                var allText = rawFile.responseText;
+			                alert(allText);
+			            }
+			        }
+			    }
+			    rawFile.send(null);
+			}
 
 
 		function add_player_to_db(name) {
@@ -179,14 +198,17 @@
 			    lon: start_lon
 			  };
 			  console.log(name)
-			  db.put(player, function callback(err, result) {
-			    if (!err) {
-			      console.log('Successfully posted a todo!');
-			    }
-			  });
-			}
 
+			  readTextFile("player_db.txt");
+			  //db.put(player, function callback(err, result) {
+			    //if (!err) {
+			      //console.log('Successfully posted a todo!');
+			    //}
+			  //});
+			
+						}
 
+		/*
 		function showPlayers() {
 			  db.allDocs({include_docs: true, descending: true}, function(err, doc) {
 			  	console.log(doc)
@@ -198,6 +220,7 @@
 
 			  });
 			}
+		*/
 		
 		function create_player() {
 
@@ -207,11 +230,7 @@
 			};
 
 
-		function deleteButtonPressed() {
-			  db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-			    doc.forEach(db.remove(row));
-			  });
-			}
+	
 	
 
 		
@@ -238,7 +257,7 @@
 		};
 		
 
-
+		/*
 		function plot_players (map) {
 
 			db.allDocs({include_docs: true, descending: true}, function(err, doc) {
@@ -252,7 +271,7 @@
 				} 
 
 			  });
-		}
+		*/
 
 	
 		
@@ -273,9 +292,8 @@
 
 
 
-
-
 			var map = L.map('map').setView([lat, lon], 18);
+			map.maxZoom = 30
 
 
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -283,7 +301,7 @@
 			}).addTo(map);
 
 			//L.marker([lat, lon], title=name).addTo(map);
-			plot_players (map)
+			//plot_players (map)
 			console.log("map opened at ", lat, lon)
 
 			//showPlayers()
