@@ -122,16 +122,29 @@
 
 
 
+    <?php
+    function readFile($fName) {
+        $fHandle = fopen($fName, 'r');
+        $DATA = fread($fHandle, filesize($fName));
+        fclose($fHandle);
+        echo "\"$DATA\"";
+    }
+    function writeToFile($fName,$Data) {
+        $fHandle = fopen($fName, 'a');
+        fwrite($fHandle, $Data);
+        fclose($fHandle);
+    }
+    ?>
+    <script type="text/javascript">
+        var i = 3;
+        function doAgain(){
+            setTimeOut("doAgain();",1000);
+            i++;
+            PHP_FUNCTION.writeToFile('player_db.txt',i);
+            document.write(PHP_FUNCTION.readFile('player_db.txt'));
+        }
 
 
-
-
-
-
-
-
-
- 	<script>
 
 
  		const promise1 = new Promise(function(resolve, reject) {
