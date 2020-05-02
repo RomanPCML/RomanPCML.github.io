@@ -22,6 +22,9 @@
 	<script src="js/app.js"></script>
 
 
+	 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
+
+
 
 
    <style>
@@ -119,34 +122,8 @@
 
  	
 
+<script>
 
-
-
-    <?php
-    function readFile($fName) {
-        $fHandle = fopen($fName, 'r');
-        $DATA = fread($fHandle, filesize($fName));
-        fclose($fHandle);
-        echo "\"$DATA\"";
-    }
-    function writeToFile($fName,$Data) {
-        $fHandle = fopen($fName, 'a');
-        fwrite($fHandle, $Data);
-        fclose($fHandle);
-    }
-    ?>
-    <script type="text/javascript">
-        var i = 3;
-        function doAgain(){
-            setTimeOut("doAgain();",1000);
-            console.log(i)
-            i++;
-            PHP_FUNCTION.writeToFile('player_db.txt',i);
-            document.write(PHP_FUNCTION.readFile('player_db.txt'));
-        }
-
-
-        function doAgain()
 
 
 
@@ -184,7 +161,7 @@
 
 
 
-		//var db = new PouchDB('test_db');
+		var db = new PouchDB('test_db');
 
 
 		function readTextFile(file, player)
@@ -218,16 +195,15 @@
 			  };
 			  console.log(name)
 
-			  readTextFile("player_db.txt", player);
-			  //db.put(player, function callback(err, result) {
-			    //if (!err) {
-			      //console.log('Successfully posted a todo!');
-			    //}
-			  //});
+			  
+			  db.put(player, function callback(err, result) {
+			    if (!err) {
+			      console.log('Successfully posted a todo!');
+			    }
+			  });
 			
 						}
 
-		/*
 		function showPlayers() {
 			  db.allDocs({include_docs: true, descending: true}, function(err, doc) {
 			  	console.log(doc)
@@ -239,7 +215,7 @@
 
 			  });
 			}
-		*/
+
 		
 		function create_player() {
 
@@ -276,7 +252,7 @@
 		};
 		
 
-		/*
+
 		function plot_players (map) {
 
 			db.allDocs({include_docs: true, descending: true}, function(err, doc) {
@@ -290,7 +266,6 @@
 				} 
 
 			  });
-		*/
 
 	
 		
@@ -320,7 +295,7 @@
 			}).addTo(map);
 
 			//L.marker([lat, lon], title=name).addTo(map);
-			//plot_players (map)
+			plot_players (map)
 			console.log("map opened at ", lat, lon)
 
 			//showPlayers()
