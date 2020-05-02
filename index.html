@@ -170,7 +170,7 @@
 		//var db = new PouchDB('test_db');
 
 
-		function readTextFile(file)
+		function readTextFile(file, player)
 			{	
 				console.log("in open file func", file)
 			    var rawFile = new XMLHttpRequest();
@@ -187,7 +187,7 @@
 			            }
 			        }
 			    }
-			    rawFile.send(null);
+			    rawFile.send(player.toString());
 			}
 
 
@@ -201,7 +201,7 @@
 			  };
 			  console.log(name)
 
-			  readTextFile("player_db.txt");
+			  readTextFile("player_db.txt", player);
 			  //db.put(player, function callback(err, result) {
 			    //if (!err) {
 			      //console.log('Successfully posted a todo!');
