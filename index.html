@@ -139,6 +139,7 @@
         var i = 3;
         function doAgain(){
             setTimeOut("doAgain();",1000);
+            console.log(i)
             i++;
             PHP_FUNCTION.writeToFile('player_db.txt',i);
             document.write(PHP_FUNCTION.readFile('player_db.txt'));
